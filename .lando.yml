@@ -1,0 +1,19 @@
+name: symphonyinc
+services:
+  web:
+    api: 4
+    #image: alpine:3.18.3
+    volumes:
+      - ./:/app
+    image:
+      imagefile: |
+        FROM debian:stable
+        COPY boot.sh /etc/lando/boot.sh
+        COPY landorc.sh /etc/lando/landorc.sh
+        COPY script.sh  /etc/lando/system.d/script.sh
+        ENV BASH_ENV=/etc/lando/landorc.sh
+        ENV ENV=/etc/lando/landorc.sh
+        RUN /etc/lando/boot.sh
+        SHELL ["/bin/lash", "-c"]
+        RUN echo $0 && env && env | grep "PACKAGE"
+        CMD tail -f /dev/null
