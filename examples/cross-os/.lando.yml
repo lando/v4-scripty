@@ -1,25 +1,27 @@
 name: cross-os-test
 services:
-  # debianbash:
-  #   api: 4
-  #   volumes:
-  #     - ./:/app
-  #   image:
-  #     imagefile: |
-  #       FROM debian:latest
-  #       COPY boot.sh /etc/lando/boot.sh
-  #       COPY landorc.sh /etc/lando/landorc.sh
-  #       COPY shell-script.sh /etc/lando/boot.d/shell-script.sh
-  #       COPY bash-script.bash /etc/lando/boot.d/bash-script.bash
-  #       COPY shell-script.sh /etc/lando/lash.d/shell-script.sh
-  #       COPY bash-script.bash /etc/lando/lash.d/bash-script.bash
-  #       ENV BASH_ENV=/etc/lando/landorc.sh
-  #       ENV ENV=/etc/lando/landorc.sh
-  #       RUN /etc/lando/boot.sh && echo 2
-  #       SHELL ["/bin/lash", "-c"]
-  #       RUN env && echo 1
-  #       RUN env | grep LANDO_TEST_BASH=true && env | grep LANDO_TEST_SH=true && echo 1
-  #       CMD tail -f /dev/null
+  debianbash:
+    api: 4
+    volumes:
+      - ./:/app
+    image:
+      imagefile: |
+        FROM debian:latest
+        COPY boot.sh /etc/lando/boot.sh
+        COPY landorc.sh /etc/lando/landorc.sh
+        COPY shell-script.sh /etc/lando/boot.d/shell-script.sh
+        COPY bash-script.bash /etc/lando/boot.d/bash-script.bash
+        COPY shell-script.sh /etc/lando/lash.d/shell-script.sh
+        COPY bash-script.bash /etc/lando/lash.d/bash-script.bash
+        # Works in non-interactive bash
+        ENV BASH_ENV=/etc/lando/landorc.sh
+        COPY lash.sh /bin/lash
+        RUN chmod +x /bin/lash
+        RUN /etc/lando/boot.sh && echo 2
+        SHELL ["/bin/lash", "-c"]
+        RUN env && echo 1
+        RUN env | grep LANDO_TEST_BASH=true && env | grep LANDO_TEST_SH=true && echo 1
+        CMD tail -f /dev/null
   debian-no-bash:
     api: 4
     volumes:
@@ -30,17 +32,16 @@ services:
         RUN apt-get remove -y --allow-remove-essential bash
         COPY boot.sh /etc/lando/boot.sh
         COPY landorc.sh /etc/lando/landorc.sh
-        COPY landorc.sh $HOME/.profile
         COPY shell-script.sh /etc/lando/boot.d/shell-script.sh
         COPY bash-script.bash /etc/lando/boot.d/bash-script.bash
         COPY shell-script.sh /etc/lando/lash.d/shell-script.sh
         COPY bash-script.bash /etc/lando/lash.d/bash-script.bash
         # Works in non-interactive bash
         ENV BASH_ENV=/etc/lando/landorc.sh
-        # Works in interactive sh mode
-        ENV ENV=/etc/lando/landorc.sh
+        COPY lash.sh /bin/lash
+        RUN chmod +x /bin/lash
         RUN /etc/lando/boot.sh && echo 2
-        SHELL ["/bin/lash", "-c"]
+        SHELL ["/bin/lash"]
         RUN env && echo 2
         RUN env | grep LANDO_TEST_SH=true && echo 1
         CMD tail -f /dev/null

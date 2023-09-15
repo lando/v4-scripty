@@ -2,7 +2,6 @@
 
 # Default sh shell information
 SH_LOCATION=$(which sh)
-cp $SH_LOCATION /bin/lash
 export LANDO_SHELL="sh"
 export LANDO_SHELL_PATH=$SH_LOCATION
 
@@ -11,8 +10,6 @@ if [ -x "$(command -v bash)" ]; then
     echo "Bash found."
     # @todo: do we really want the bash at the top of PATH?
     BASH_LOCATION=$(which bash)
-    # Make bash default by copying over sh
-    cp $BASH_LOCATION /bin/lash
     export LANDO_SHELL="bash"
     export LANDO_SHELL_PATH=$BASH_LOCATION
   else
@@ -45,7 +42,5 @@ if [ -d /etc/lando/boot.d ]; then
 fi
 
 # Add LANDO_SHELL to the environment
-echo "export LANDO_SHELL=\"$LANDO_SHELL\"" >> /etc/bash.bashrc
-echo "export LANDO_SHELL=\"$LANDO_SHELL\"" >> /etc/.profile
-echo "export LANDO_SHELL=\"$LANDO_SHELL\"" >> ~/.profile
+echo "export LANDO_SHELL=\"$LANDO_SHELL\"" >> /etc/lando/environment.sh
 echo "Ran boot.sh"
