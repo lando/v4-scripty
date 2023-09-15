@@ -1,7 +1,6 @@
 #! /bin/sh
 
 # Default sh shell information
-# @todo: relying on `which` breaks archlinux
 SH_LOCATION=$(which sh)
 cp $SH_LOCATION /bin/lash
 export LANDO_SHELL="sh"
@@ -18,29 +17,35 @@ if [ -x "$(command -v bash)" ]; then
     export LANDO_SHELL_PATH=$BASH_LOCATION
   else
     echo "Bash not found, trying to install."
-    exec /etc/lando/bash-install.sh
+    #exec /etc/lando/bash-install.sh
 fi
 
 # Run /etc/lando/boot.d scripts
 if [ -d /etc/lando/boot.d ]; then
+  echo "Running /etc/lando/boot.d scripts"
   # Execute sh scripts in /etc/lando/boot.d
   for i in /etc/lando/boot.d/*.sh; do
     if [ -r $i ]; then
-        exec $i
+        . $i
     fi
   done
   unset i
  
   # Execute the bash scripts in /etc/lando/boot.d if LANDO_SHELL is bash.
+  echo "LANDO_SHELL: $LANDO_SHELL"
   if [ "$LANDO_SHELL" = "bash" ]; then
     echo "Sourcing bash scripts in /etc/lando/boot.d"
     for i in /etc/lando/boot.d/*.bash; do
       if [ -r $i ]; then
-        exec $i
+        . $i
       fi
     done
     unset i
   fi
 fi
 
+# Add LANDO_SHELL to the environment
+echo "export LANDO_SHELL=\"$LANDO_SHELL\"" >> /etc/bash.bashrc
+echo "export LANDO_SHELL=\"$LANDO_SHELL\"" >> /etc/.profile
+echo "export LANDO_SHELL=\"$LANDO_SHELL\"" >> ~/.profile
 echo "Ran boot.sh"

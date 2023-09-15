@@ -1,0 +1,127 @@
+name: cross-os-test
+services:
+  debian:
+    api: 4
+    #image: alpine:3.18.3
+    volumes:
+      - ./:/app
+    image:
+      imagefile: |
+        FROM debian:stable
+        # RUN rm /bin/bash
+        COPY boot.sh /etc/lando/boot.sh
+        COPY landorc.sh /etc/lando/landorc.sh
+        COPY env-detect.sh  /etc/lando/env-detect.sh
+        COPY env-detect.sh  /etc/lando/lash.d/001-env-detect.sh
+        COPY bash-install.sh /etc/lando/bash-install.sh
+        COPY apt-install.sh /etc/lando/apt-install.sh
+        ENV BASH_ENV=/etc/lando/landorc.sh
+        ENV ENV=/etc/lando/landorc.sh
+        RUN /etc/lando/boot.sh && echo 3
+        SHELL ["/bin/lash", "-c"]
+        RUN /etc/lando/apt-install.sh
+        CMD tail -f /dev/null
+  archlinux:
+    api: 4
+    #image: alpine:3.18.3
+    volumes:
+      - ./:/app
+    image:
+      imagefile: |
+        FROM archlinux:latest
+        # RUN rm /bin/bash
+        COPY boot.sh /etc/lando/boot.sh
+        COPY landorc.sh /etc/lando/landorc.sh
+        COPY env-detect.sh  /etc/lando/env-detect.sh
+        COPY env-detect.sh  /etc/lando/lash.d/001-env-detect.sh
+        COPY bash-install.sh /etc/lando/bash-install.sh
+        COPY apt-install.sh /etc/lando/apt-install.sh
+        ENV BASH_ENV=/etc/lando/landorc.sh
+        ENV ENV=/etc/lando/landorc.sh
+        RUN /etc/lando/boot.sh && echo 3
+        SHELL ["/bin/lash", "-c"]
+        RUN /etc/lando/apt-install.sh
+        CMD tail -f /dev/null
+  alpine:
+    api: 4
+    #image: alpine:3.18.3
+    volumes:
+      - ./:/app
+    image:
+      imagefile: |
+        FROM alpine:latest
+        # RUN rm /bin/bash
+        COPY boot.sh /etc/lando/boot.sh
+        COPY landorc.sh /etc/lando/landorc.sh
+        COPY env-detect.sh  /etc/lando/env-detect.sh
+        COPY env-detect.sh  /etc/lando/lash.d/001-env-detect.sh
+        COPY bash-install.sh /etc/lando/bash-install.sh
+        COPY apt-install.sh /etc/lando/lash.d/apt-install.sh
+        ENV BASH_ENV=/etc/lando/landorc.sh
+        ENV ENV=/etc/lando/landorc.sh
+        RUN /etc/lando/boot.sh && echo 3
+        SHELL ["/bin/lash", "-c"]
+        RUN /etc/lando/apt-install.sh
+        CMD tail -f /dev/null
+  fedora:
+    api: 4
+    #image: alpine:3.18.3
+    volumes:
+      - ./:/app
+    image:
+      imagefile: |
+        FROM fedora:latest
+        # RUN rm /bin/bash
+        COPY boot.sh /etc/lando/boot.sh
+        COPY landorc.sh /etc/lando/landorc.sh
+        COPY env-detect.sh  /etc/lando/env-detect.sh
+        COPY env-detect.sh  /etc/lando/lash.d/001-env-detect.sh
+        COPY apt-install.sh /etc/lando/apt-install.sh
+        COPY bash-install.sh /etc/lando/bash-install.sh
+        ENV BASH_ENV=/etc/lando/landorc.sh
+        ENV ENV=/etc/lando/landorc.sh
+        RUN /etc/lando/boot.sh && echo 3
+        SHELL ["/bin/lash", "-c"]
+        RUN /etc/lando/apt-install.sh
+        CMD tail -f /dev/null
+  centos:
+    api: 4
+    #image: alpine:3.18.3
+    volumes:
+      - ./:/app
+    image:
+      imagefile: |
+        FROM dokken/centos-8:latest
+        # RUN rm /bin/bash
+        COPY boot.sh /etc/lando/boot.sh
+        COPY landorc.sh /etc/lando/landorc.sh
+        COPY env-detect.sh  /etc/lando/env-detect.sh
+        COPY env-detect.sh  /etc/lando/lash.d/001-env-detect.sh
+        COPY bash-install.sh /etc/lando/bash-install.sh
+        COPY apt-install.sh /etc/lando/apt-install.sh
+        ENV BASH_ENV=/etc/lando/landorc.sh
+        ENV ENV=/etc/lando/landorc.sh
+        RUN /etc/lando/boot.sh && echo 3
+        RUN /etc/lando/apt-install.sh
+        SHELL ["/bin/lash", "-c"]
+        CMD tail -f /dev/null
+    alpine:
+    api: 4
+    #image: alpine:3.18.3
+    volumes:
+      - ./:/app
+    image:
+      imagefile: |
+        FROM alpine:latest
+        COPY boot.sh /etc/lando/boot.sh
+        COPY landorc.sh /etc/lando/landorc.sh
+        #COPY env-detect.sh  /etc/lando/env-detect.sh
+        #COPY env-detect.sh  /etc/lando/lash.d/001-env-detect.sh
+        #COPY bash-install.sh /etc/lando/bash-install.sh
+        #COPY apt-install.sh /etc/lando/apt-install.sh
+        ENV BASH_ENV=/etc/lando/landorc.sh
+        ENV ENV=/etc/lando/landorc.sh
+        RUN /etc/lando/boot.sh
+        #SHELL ["/bin/lash", "-c"]
+        #RUN /etc/lando/apt-install.sh
+        CMD tail -f /dev/null

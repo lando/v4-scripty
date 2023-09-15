@@ -62,13 +62,38 @@ run_install() {
   echo $DISTRO $PROGRAM
   find_package_manager $DISTRO
   # @Todo: handle different package managers options
-  cmd='"$PACKAGE_MANAGER" update && "$PACKAGE_MANAGER" -y install "$PROGRAM"'
-  check_package_manager $PACKAGE_MANAGER && eval $cmd
+  case $PACKAGE_MANAGER in
+    pacman)
+      cmd='pacman -S "$PROGRAM"'
+      ;;
+    apt)
+      cmd='apt update && apt install "$PROGRAM"'
+      ;;
+    apk)
+      cmd='apk update && apk add --no-cache "$PROGRAM"'
+      ;;
+    dnf)
+      cmd='dnf update && dnf install "$PROGRAM"'
+      ;;
+    yum)
+      cmd='yum update && yum install "$PROGRAM"'
+      ;;
+    *)
+      echo "Platform not supported!"
+      ;;
+  esac
+  {
+      check_package_manager $PACKAGE_MANAGER && eval $cmd
+      echo "Ran $cmd"
+  } || {
+      echo "Error: $cmd could not be run."
+      exit 0
+  }
 }
 
-DISTRO=get_distro
-BASE_DISTRO=get_base_distro
-PACKAGE_MANAGER=find_package_manager $DISTRO
+get_distro
+get_base_distro
+find_package_manager $DISTRO
 
 # Export values as environment variables
 export BASE_DISTRO="$BASE_DISTRO"

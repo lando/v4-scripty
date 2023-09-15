@@ -1,0 +1,8 @@
+{
+  "scripts":{
+    "test:leia": "yarn leia \"examples/**/README.md\" -c 'Destroy tests' --stdin"
+  },
+  "devDependencies": {
+    "@lando/leia": "^1.0.0-beta.1"
+  }
+}

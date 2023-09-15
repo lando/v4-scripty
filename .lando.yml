@@ -8,15 +8,16 @@ services:
     image:
       imagefile: |
         FROM debian:stable
-        RUN rm /bin/bash
+        # RUN rm /bin/bash
         COPY boot.sh /etc/lando/boot.sh
         COPY landorc.sh /etc/lando/landorc.sh
         COPY env-detect.sh  /etc/lando/env-detect.sh
-        COPY env-detect.sh  /etc/lando/lash.d/001-env-detect.sh
+        COPY env-detect.sh  /etc/lando/lash.d/002-env-detect.sh
+        COPY log.sh /etc/lando/lash.d/001-log.sh
         COPY bash-install.sh /etc/lando/bash-install.sh
         ENV BASH_ENV=/etc/lando/landorc.sh
         ENV ENV=/etc/lando/landorc.sh
-        RUN /etc/lando/boot.sh && echo 2
+        RUN /etc/lando/boot.sh && echo 3
         SHELL ["/bin/lash", "-c"]
         RUN echo $0 && env
         CMD tail -f /dev/null
