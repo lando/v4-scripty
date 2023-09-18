@@ -105,7 +105,7 @@ services:
         RUN /etc/lando/apt-install.sh
         SHELL ["/bin/lash", "-c"]
         CMD tail -f /dev/null
-    alpine:
+  alpine:
     api: 4
     #image: alpine:3.18.3
     volumes:

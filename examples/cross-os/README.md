@@ -10,6 +10,10 @@ Run the following commands to get up and running with this example.
 
 ```bash
 # Should start up successfully
+cp ../../lash.sh .
+cp ../../boot.sh .
+cp ../../env.detect.sh .
+cp ../../log.sh .
 lando poweroff
 lando start
 ```
@@ -29,12 +33,6 @@ lando ssh -s debian-no-bash -c "whereis lash" | grep "bin/lash"
 
 ```bash
 # Should link lash to correct shell
-lando ssh -s debianbash -c "bash --version" | grep "GNU bash"
-lando ssh -s debian-no-bash -c "bash --version" | grep "executable file not found"
-```
-
-```bash
-# Should have lash.d scripts loaded
 lando ssh -s debianbash -c "bash --version" | grep "GNU bash"
 lando ssh -s debian-no-bash -c "bash --version" | grep "executable file not found"
 ```

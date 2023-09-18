@@ -1,9 +1,15 @@
 #! /bin/sh
 
+# Make sure `which` is installed
+# @todo: archlinux which install doesn't work
+if [ ! -x "$(command -v which)" ]; then
+  echo "which not found, trying to install."
+  . /etc/lando/install-which.sh
+  install_which
+fi
+
 # Default sh shell information
-# @todo: relying on `which` breaks archlinux
 SH_LOCATION=$(which sh)
-cp $SH_LOCATION /bin/lash
 export LANDO_SHELL="sh"
 export LANDO_SHELL_PATH=$SH_LOCATION
 
@@ -12,13 +18,12 @@ if [ -x "$(command -v bash)" ]; then
     echo "Bash found."
     # @todo: do we really want the bash at the top of PATH?
     BASH_LOCATION=$(which bash)
-    # Make bash default by copying over sh
-    cp $BASH_LOCATION /bin/lash
     export LANDO_SHELL="bash"
     export LANDO_SHELL_PATH=$BASH_LOCATION
   else
     echo "Bash not found, trying to install."
-    exec /etc/lando/bash-install.sh
+    . /etc/lando/install-bash.sh
+    install_bash
 fi
 
 # Run /etc/lando/boot.d scripts
@@ -26,7 +31,7 @@ if [ -d /etc/lando/boot.d ]; then
   # Execute sh scripts in /etc/lando/boot.d
   for i in /etc/lando/boot.d/*.sh; do
     if [ -r $i ]; then
-        exec $i
+        . $i
     fi
   done
   unset i
@@ -36,11 +41,12 @@ if [ -d /etc/lando/boot.d ]; then
     echo "Sourcing bash scripts in /etc/lando/boot.d"
     for i in /etc/lando/boot.d/*.bash; do
       if [ -r $i ]; then
-        exec $i
+        . $i
       fi
     done
     unset i
   fi
 fi
 
-echo "Ran boot.sh"
+# Add LANDO_SHELL to the environment
+echo "export LANDO_SHELL=\"$LANDO_SHELL\"" >> /etc/lando/environment.sh

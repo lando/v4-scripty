@@ -21,7 +21,7 @@ get_base_distro(){
 find_package_manager() {
   DISTRO=$1
   case $DISTRO in
-    manjaro|arch)
+    manjaro|arch|archarm)
       PACKAGE_MANAGER="pacman"
       ;;
     debian|ubuntu)
@@ -64,16 +64,16 @@ run_install() {
   # @Todo: handle different package managers options
   case $PACKAGE_MANAGER in
     pacman)
-      cmd='pacman -S "$PROGRAM"'
+      cmd='pacman -Syu && yes | pacman -S "$PROGRAM"'
       ;;
     apt)
-      cmd='apt update && apt install "$PROGRAM"'
+      cmd='apt update && apt install "$PROGRAM" -y'
       ;;
     apk)
       cmd='apk update && apk add --no-cache "$PROGRAM"'
       ;;
     dnf)
-      cmd='dnf update && dnf install "$PROGRAM"'
+      cmd='dnf -y update && dnf install -y "$PROGRAM"'
       ;;
     yum)
       cmd='yum update && yum install "$PROGRAM"'
