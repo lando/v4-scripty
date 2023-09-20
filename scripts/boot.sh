@@ -5,7 +5,6 @@
 if [ ! -x "$(command -v which)" ]; then
   echo "which not found, trying to install."
   . /etc/lando/install-which.sh
-  install_which
 fi
 
 # Default sh shell information
@@ -23,7 +22,6 @@ if [ -x "$(command -v bash)" ]; then
   else
     echo "Bash not found, trying to install."
     . /etc/lando/install-bash.sh
-    install_bash
 fi
 
 # Run /etc/lando/boot.d scripts

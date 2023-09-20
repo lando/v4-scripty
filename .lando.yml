@@ -7,23 +7,21 @@ services:
       - ./:/app
     image:
       imagefile: |
-        FROM fedora:latest
+        FROM debian:latest
         # 1. Copy essential files
-        COPY boot.sh /etc/lando/boot.sh
-        COPY landorc.sh /etc/lando/landorc.sh
-        COPY env-detect.sh  /etc/lando/env-detect.sh
-        COPY env-detect.sh  /etc/lando/lash.d/002-env-detect.sh
-        COPY log.sh /etc/lando/lash.d/001-log.sh
-        COPY install-bash.sh /etc/lando/install-bash.sh
-        COPY install-which.sh /etc/lando/install-which.sh
+        COPY scripts /etc/lando
+        COPY scripts/env-detect.sh  /etc/lando/lash.d/002-env-detect.sh
+        COPY scripts/log.sh /etc/lando/lash.d/001-log.sh
         # 2. Install lash
         COPY lash.sh /bin/lash
         RUN chmod +x /bin/lash
         # 3. Setup landorc.sh for BASH
         ENV BASH_ENV=/etc/lando/landorc.sh
         # 4. Run Boot
-        RUN /etc/lando/boot.sh && echo 3
+        RUN /etc/lando/boot.sh
         # 5. Switch to lash
         SHELL ["/bin/lash", "-c"]
-        RUN echo $0 && env
+        RUN lando_blue "Switched to lash and loaded Lando logger." 
+        # 6. Usermapping
+        RUN /etc/lando/usermap.sh www-data 501
         CMD tail -f /dev/null

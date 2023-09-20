@@ -1,14 +1,14 @@
 #!/bin/sh
 
 # @todo: try to install bash...will need to run /etc/lando/env-detect.sh
-. /etc/lando/env-detect.sh
+. /etc/lando/install-dep.sh
 echo $PACKAGE_MANAGER
 # @todo: break out run_install into a separate script.
 # 1. Check for prerequisites (package manager exists)
 # 2. Install bash
 # 3. Verify installation
 {
-  run_install "bash" && echo "Bash installed."
+  install_dep "bash" && echo "Bash installed."
 } || {
   echo "Could not install bash, will continue using sh"
   exit 0

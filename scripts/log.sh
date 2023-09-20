@@ -1,4 +1,5 @@
 #!/bin/sh
+
 #
 # Library for logging functions
 #
