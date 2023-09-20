@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 #. /etc/lando/lash.d/001-log.sh
 lando_blue "Running usermap.sh"

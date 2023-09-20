@@ -10,8 +10,8 @@ echo $PACKAGE_MANAGER
 {
   install_dep "bash" && echo "Bash installed."
 } || {
-  echo "Could not install bash, will continue using sh"
-  exit 0
+  echo "Could not install bash."
+  exit 1
 }
 
 # Verify bash command exists and runs
@@ -19,8 +19,8 @@ echo $PACKAGE_MANAGER
   # print location of bash
   bash -c "echo 'Bash is working'"
 } || {
-  echo "Bash is not working, will continue using sh"
-  exit 0
+  echo "Bash is not working."
+  exit 1
 }
 
 # @todo: do we really want the bash at the top of PATH?

@@ -7,10 +7,12 @@ if [ ! -x "$(command -v which)" ]; then
   . /etc/lando/install-which.sh
 fi
 
-# Default sh shell information
-SH_LOCATION=$(which sh)
-export LANDO_SHELL="sh"
-export LANDO_SHELL_PATH=$SH_LOCATION
+# # Default sh shell information
+# @TODO: figure out how to handle sh
+# SH_LOCATION=$(which sh)
+# export LANDO_SHELL="sh"
+# export LANDO_SHELL_PATH=$SH_LOCATION
+
 
 # See if bash exists
 if [ -x "$(command -v bash)" ]; then
