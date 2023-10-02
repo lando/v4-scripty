@@ -10,15 +10,16 @@ services:
         FROM debian:latest
         # 1. Copy essential files
         COPY scripts /etc/lando
+        COPY scripts/install-dep.sh /etc/lando/lash.d/003-install-dep.sh
         COPY scripts/env-detect.sh  /etc/lando/lash.d/002-env-detect.sh
         COPY scripts/log.sh /etc/lando/lash.d/001-log.sh
+        COPY lash.sh /bin/lash
+        RUN chmod u+x /bin/lash
         # 2. Setup landorc.sh for BASH
         ENV BASH_ENV=/etc/lando/landorc.sh
         # 3. Run Boot
         RUN /etc/lando/boot.sh
-        # 4. Switch to bash
-        SHELL ["/bin/bash", "-c"]
-        RUN lando_blue "Switched to bash and loaded Lando logger."
         # 5. Usermapping
         RUN /etc/lando/usermap.sh www-data 501
+        RUN /etc/lando/groupmap.sh www-data 20
         CMD tail -f /dev/null
