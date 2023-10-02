@@ -1,127 +1,82 @@
 #!/bin/sh
 
-#
-# Library for logging functions
-#
-# This is taken and adapted from bitnamis awesome logging utils
-# https://github.com/bitnami/bitnami-docker-mysql/blob/master/8.0/debian-10/prebuildfs/opt/bitnami/scripts/liblog.sh
-#
-# We've /bin/sh'd it and added some other func
-#
+# ------------------------------------------------------------------------------
 
-# Constants
-RESET='\033[0m'
-RED='\033[38;5;1m'
-GREEN='\033[38;5;2m'
-YELLOW='\033[38;5;3m'
-MAGENTA='\033[38;5;5m'
-CYAN='\033[38;5;6m'
-LANDO_QUIET="${LANDO_QUIET:-no}"
+# Logsh. A minimal POSIX compliant logging library.
+#
+# Usage:
+#   Either source the content of this file or just place it directly
+#   into your own script. Several functions will be available to you.
+#
+#   - logdebug
+#   - loginfo
+#   - logsuccess
+#   - logwarning
+#   - logerror
+#   - logexit
+#
+# Configuration:
+#   Logging is configured via environment variables.
+#
+#   LOGSH_COLOR:
+#     Can either be 'true' or 'false' and defaults to 'true'. Only
+#     respected while sourcing logsh. This means you can only
+#     switch between 'true' and 'false' by resourcing the script.
+#
+#   LOGSH_LEVEL:
+#     Integer ranging from 0 to 4. Defaults to 3. If the log
+#     message level is lower or equal to the selected level,the
+#     log message wil be written to stderr. Here are the mappings
+#     from integers to text levels:
+#
+#     0=ERROR
+#     1=WARNING
+#     2=SUCCESS
+#     3=INFO
+#     4=DEBUG
+#
+# Source Repository:
+#   https://github.com/trallnag/logsh
 
-# Functions
+# ------------------------------------------------------------------------------
 
-########################
-# Print to STDERR
-# Arguments:
-#   Message to print
-# Returns:
-#   None
-#########################
-_lando_stderr_print() {
-  # comparison is performed without regard to the case of alphabetic characters
-  if [ $LANDO_QUIET = "no" ]; then
-    printf "%b\\n" "${*}" >&2
+if [ "${LOGSH_COLOR:-true}" = "true" ]; then
+  _logsh_default_color='\033[0m'
+  _logsh_debug_color='\033[36m'
+  _logsh_info_color='\033[34m'
+  _logsh_success_color='\033[32m'
+  _logsh_warn_color='\033[33m'
+  _logsh_error_color='\033[31m'
+else
+  _logsh_default_color=
+  _logsh_debug_color=
+  _logsh_info_color=
+  _logsh_success_color=
+  _logsh_warn_color=
+  _logsh_error_color=
+fi
+
+log() {
+  text="$1"
+  level="$2"
+  level_as_text="$3"
+  color="$4"
+
+  if [ "$level" -le "${LOGSH_LEVEL:-3}" ]; then
+    printf '%b[%s] %s%b\n' "$color" "$level_as_text" "$text" "$_logsh_default_color" >&2
   fi
 }
 
-# Functions
+logexit() { log "$1" 0 "ERROR" "$_logsh_error_color" && exit 1; }
 
-########################
-# Print to STDERR
-# Arguments:
-#   Message to print
-# Returns:
-#   None
-#########################
-_lando_stdout_print() {
-  printf "%b\\n" "${*}" >&1
-}
+logerror() { log "$1" 0 "ERROR" "$_logsh_error_color"; }
 
-########################
-# Print messages
-# Arguments:
-#   Message to log
-# Returns:
-#   None
-#########################
-lando_blue() {
-  _lando_stdout_print "${CYAN}${*}${RESET}"
-}
-lando_green() {
-  _lando_stdout_print "${GREEN}${*}${RESET}"
-}
-lando_pink() {
-  _lando_stdout_print "${MAGENTA}${*}${RESET}"
-}
-lando_yellow() {
-  _lando_stdout_print "${YELLOW}${*}${RESET}"
-}
-lando_red() {
-  _lando_stdout_print "${RED}${*}${RESET}"
-}
-lando_check() {
-  _lando_stdout_print "${GREEN}✔ ${RESET}${*}"
-}
+logwarning() { log "$1" 1 "WARNING" "$_logsh_warn_color"; }
 
-########################
-# Log message
-# Arguments:
-#   Message to log
-# Returns:
-#   None
-#########################
-_lando_log() {
-  _lando_stderr_print "${GREEN}${LANDO_MODULE:-lando} ${MAGENTA}$(date "+%T.%2N ")${RESET}${*}"
-}
-########################
-# Log an 'info' message
-# Arguments:
-#   Message to log
-# Returns:
-#   None
-#########################
-lando_info() {
-  _lando_log "${GREEN}INFO ${RESET} ==> ${*}"
-}
-########################
-# Log message
-# Arguments:
-#   Message to log
-# Returns:
-#   None
-#########################
-lando_warn() {
-  _lando_log "${YELLOW}WARN ${RESET} ==> ${*}"
-}
-########################
-# Log an 'error' message
-# Arguments:
-#   Message to log
-# Returns:
-#   None
-#########################
-lando_error() {
-  _lando_log "${RED}ERROR${RESET} ==> ${*}"
-}
-########################
-# Log a 'debug' message
-# Globals:
-#   BITNAMI_DEBUG
-# Arguments:
-#   None
-# Returns:
-#   None
-#########################
-lando_debug() {
-  _lando_log "${MAGENTA}DEBUG${RESET} ==> ${*}"
-}
+logsuccess() { log "$1" 2 "SUCCESS" "$_logsh_success_color"; }
+
+loginfo() { log "$1" 3 "INFO" "$_logsh_info_color"; }
+
+logdebug() { log "$1" 4 "DEBUG" "$_logsh_debug_color"; }
+
+# ------------------------------------------------------------------------------

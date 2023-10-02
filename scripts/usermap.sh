@@ -1,10 +1,10 @@
 #! /bin/lash
 
-lando_blue "Running usermap.sh"
+loginfo "Running usermap.sh"
 # Verify usermod exists
 verify_usermod() {
   if [ ! -x "$(command -v usermod)" ]; then
-    lando_yellow "usermod not found."
+    logwarning "usermod not found."
     return 1;
   fi
 
@@ -13,7 +13,7 @@ verify_usermod() {
 
 # Install usermod if necessary
 install_usermod() {
-  lando_green "Installing usermod."
+  logsuccess "Installing usermod."
   install_dep "usermod" verify_usermod
 }
 
@@ -21,13 +21,13 @@ install_usermod() {
 map_user() {
   DEFAULT_USER=$1
   HOST_UID=$2
-  lando_green "Mapping user $DEFAULT_USER to host user UID $HOST_UID."
+  logsuccess "Mapping user $DEFAULT_USER to host user UID $HOST_UID."
   usermod -u $HOST_UID $DEFAULT_USER
   # Check to see if $DEFAULT_USER now has UID $HOST_UID
   if [ $(id -u $DEFAULT_USER) -eq $HOST_UID ]; then
-    lando_green "User $DEFAULT_USER successfully mapped to host user UID $HOST_UID."
+    logsuccess "User $DEFAULT_USER successfully mapped to host user UID $HOST_UID."
   else
-    lando_red "User $DEFAULT_USER was not successfully mapped to host user UID $HOST_UID."
+    logexit "User $DEFAULT_USER was not successfully mapped to host user UID $HOST_UID."
   fi
 }
 
