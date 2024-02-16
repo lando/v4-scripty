@@ -16,6 +16,20 @@ map_group() {
   fi
 }
 
+set_user_group() {
+  # set user's primary group to the group with GID $HOST_GID
+  DEFAULT_USER=$1
+  HOST_GID=$2
+  logsuccess "Setting user $DEFAULT_USER primary group to host group GID $HOST_GID."
+  usermod -g $HOST_GID $DEFAULT_USER
+  # Check to see if the $DEFAULT_USER now has GID $HOST_GID
+  if [ $(id -g $DEFAULT_USER) -eq $HOST_GID ]; then
+    logsuccess "User $DEFAULT_USER primary group successfully set to host group GID $HOST_GID."
+  else
+    logexit "User $DEFAULT_USER primary group was not successfully set to host group GID $HOST_GID."
+  fi
+}
+
 verify_groupmod() {
   if [ ! -x "$(command -v groupmod)" ]; then
     logwarning "groupmod not found."
