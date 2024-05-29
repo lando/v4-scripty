@@ -1,5 +1,7 @@
 # PoC for Lando v4 Services Scripting Framework
 
+**WARNING: This was a PoC that should be considered deprecated**
+
 When containers are built for a Lando service, there are certain actions that need to be scripted into the Dockerfile build. These include...
 
 - Detecting the OS and other basic environment details
